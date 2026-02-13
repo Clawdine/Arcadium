@@ -4,6 +4,10 @@ members = [
 ]
 resolver = "2"
 
+# Reduce noise from newer toolchains when building Solana programs
+[workspace.lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_os, values("solana"))'] }
+
 [profile.release]
 overflow-checks = true
 lto = "fat"
