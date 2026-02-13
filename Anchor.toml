@@ -3,10 +3,10 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-arcadium = "ArcaXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+arcadium = "GNZJTKQDSJdDLLxuNYKMwV4qHL8fdxsABzfqmMyzhEHJ"
 
 [programs.devnet]
-arcadium = "ArcaXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+arcadium = "GNZJTKQDSJdDLLxuNYKMwV4qHL8fdxsABzfqmMyzhEHJ"
 
 [registry]
 url = "https://api.apr.dev"

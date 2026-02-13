@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program::{transfer, Transfer};
 
-declare_id!("ArcaXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+declare_id!("GNZJTKQDSJdDLLxuNYKMwV4qHL8fdxsABzfqmMyzhEHJ");
 
 #[program]
 pub mod arcadium {
