@@ -24,11 +24,8 @@ anchor-debug = []
 idl-build = ["anchor-lang/idl-build"]
 
 [dependencies]
-# Anchor (restored)
-anchor-lang = { version = "0.30.1" }
-# Anchor proc-macros reference these crates in generated code
-try_from = "0.3"
-try_from_unchecked = "0.1"
+# Anchor
+anchor-lang = { version = "0.31.1" }
 
 [dev-dependencies]
 anyhow = "1"
