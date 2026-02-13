@@ -87,7 +87,7 @@ pub mod arcadium {
         let job = &mut ctx.accounts.job;
         require!(job.status == JobStatus::Created, ErrorCode::InvalidJobStatus);
 
-        let agent = &ctx.accounts.agent;
+        let _agent = &ctx.accounts.agent;
         let platform = &ctx.accounts.platform;
 
         // Calculate splits: 90% to agent, 10% to platform
@@ -100,9 +100,11 @@ pub mod arcadium {
         let agent_amount = total_amount.checked_sub(platform_fee).unwrap();
 
         // Transfer from escrow to agent vault
+        // (bind pubkeys so the references outlive this statement)
+        let job_key = job.key();
         let escrow_seeds = &[
             b"escrow",
-            job.key().as_ref(),
+            job_key.as_ref(),
             &[job.bump],
         ];
         let signer_seeds = &[&escrow_seeds[..]];
@@ -175,9 +177,11 @@ pub mod arcadium {
         
         require!(amount <= vault_balance, ErrorCode::InsufficientFunds);
 
+        // (bind pubkey so the reference outlives this statement)
+        let agent_key = agent.key();
         let vault_seeds = &[
             b"agent_vault",
-            agent.key().as_ref(),
+            agent_key.as_ref(),
             &[ctx.bumps.agent_vault],
         ];
         let signer_seeds = &[&vault_seeds[..]];

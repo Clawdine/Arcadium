@@ -15,5 +15,10 @@ no-log-ix-name = []
 cpi = ["no-entrypoint"]
 default = []
 
+# Silence newer rust "unexpected cfg" warnings emitted by Anchor macros
+custom-panic = []
+custom-heap = []
+anchor-debug = []
+
 [dependencies]
 anchor-lang = "0.30.1"
