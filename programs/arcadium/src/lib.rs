@@ -64,6 +64,7 @@ pub mod arcadium {
         job.status = JobStatus::Created;
         job.created_at = Clock::get()?.unix_timestamp;
         job.bump = ctx.bumps.job;
+        job.escrow_bump = ctx.bumps.escrow;
 
         // Transfer payment from client to escrow PDA
         let cpi_context = CpiContext::new(
@@ -105,7 +106,7 @@ pub mod arcadium {
         let escrow_seeds = &[
             b"escrow",
             job_key.as_ref(),
-            &[job.bump],
+            &[job.escrow_bump],
         ];
         let signer_seeds = &[&escrow_seeds[..]];
 
@@ -231,6 +232,17 @@ pub struct RegisterAgent<'info> {
         bump
     )]
     pub agent: Account<'info, Agent>,
+
+    /// System-owned PDA that accumulates earnings for this agent.
+    /// Zero data; just a lamport vault.
+    #[account(
+        init,
+        payer = owner,
+        space = 0,
+        seeds = [b"agent_vault", agent.key().as_ref()],
+        bump
+    )]
+    pub agent_vault: SystemAccount<'info>,
     
     #[account(mut)]
     pub owner: Signer<'info>,
@@ -252,13 +264,15 @@ pub struct CreateJob<'info> {
     )]
     pub job: Account<'info, Job>,
     
-    /// CHECK: PDA for escrow
+    /// System-owned PDA that holds escrowed lamports for this job.
     #[account(
-        mut,
+        init,
+        payer = client,
+        space = 0,
         seeds = [b"escrow", job.key().as_ref()],
         bump
     )]
-    pub escrow: AccountInfo<'info>,
+    pub escrow: SystemAccount<'info>,
     
     #[account(mut)]
     pub platform: Account<'info, Platform>,
@@ -281,21 +295,21 @@ pub struct CompleteJob<'info> {
     )]
     pub agent: Account<'info, Agent>,
     
-    /// CHECK: PDA for escrow
+    /// System-owned PDA holding escrowed lamports for this job.
     #[account(
         mut,
         seeds = [b"escrow", job.key().as_ref()],
-        bump = job.bump
+        bump = job.escrow_bump
     )]
-    pub escrow: AccountInfo<'info>,
-    
-    /// CHECK: PDA for agent vault
+    pub escrow: SystemAccount<'info>,
+
+    /// System-owned PDA vault for the agent.
     #[account(
         mut,
         seeds = [b"agent_vault", agent.key().as_ref()],
         bump
     )]
-    pub agent_vault: AccountInfo<'info>,
+    pub agent_vault: SystemAccount<'info>,
     
     #[account(mut)]
     pub platform: Account<'info, Platform>,
@@ -341,13 +355,13 @@ pub struct WithdrawEarnings<'info> {
     )]
     pub agent: Account<'info, Agent>,
     
-    /// CHECK: PDA for agent vault
+    /// System-owned PDA vault for the agent
     #[account(
         mut,
         seeds = [b"agent_vault", agent.key().as_ref()],
         bump
     )]
-    pub agent_vault: AccountInfo<'info>,
+    pub agent_vault: SystemAccount<'info>,
     
     #[account(mut)]
     pub owner: Signer<'info>,
@@ -397,6 +411,7 @@ pub struct Job {
     pub created_at: i64,
     pub completed_at: Option<i64>,
     pub bump: u8,
+    pub escrow_bump: u8,
 }
 
 #[account]
